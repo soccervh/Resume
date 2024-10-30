@@ -1,5 +1,4 @@
 import { Pool } from "pg";
-import type { Global } from "@remix-run/node";
 
 let db: Pool;
 
