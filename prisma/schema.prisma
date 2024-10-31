@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Add your models here 
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String?
+  image     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  resumes   Resume[]
+}
+
+model Resume {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Basic Info
+  fullName    String
+  label       String?  // e.g., "Software Engineer"
+  email       String
+  phone       String?
+  website     String?
+  summary     String?  @db.Text
+  
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  education   Education[]
+  experience  Experience[]
+  skills      Skill[]
+  projects    Project[]
+
+  @@index([userId])
+}
+
+model Education {
+  id           String   @id @default(cuid())
+  resumeId     String
+  institution  String
+  degree       String
+  field        String
+  startDate    DateTime
+  endDate      DateTime?
+  description  String?  @db.Text
+  
+  resume       Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+}
+
+model Experience {
+  id          String   @id @default(cuid())
+  resumeId    String
+  company     String
+  position    String
+  location    String?
+  startDate   DateTime
+  endDate     DateTime?
+  current     Boolean  @default(false)
+  description String?  @db.Text
+  
+  resume      Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+}
+
+model Skill {
+  id          String   @id @default(cuid())
+  resumeId    String
+  name        String
+  level       String?  // e.g., "Beginner", "Intermediate", "Advanced"
+  
+  resume      Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  resumeId    String
+  name        String
+  url         String?
+  description String?  @db.Text
+  startDate   DateTime
+  
+  resume      Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId])
+}

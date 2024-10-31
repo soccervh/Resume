@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --primary-light: #60a5fa; /* A lighter blue */
+  --primary: #2563eb; /* A standard blue */
+  --primary-dark: #1e40af; /* A darker blue */
+  --background-dark: #111827; /* A dark gray/blue background */
+}
+
+body {
+  background-color: var(--background-dark);
+}
